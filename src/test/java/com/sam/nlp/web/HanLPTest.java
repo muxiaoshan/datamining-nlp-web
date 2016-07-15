@@ -18,14 +18,29 @@ import com.hankcs.hanlp.seg.Dijkstra.DijkstraSegment;
 import com.hankcs.hanlp.seg.NShort.NShortSegment;
 import com.hankcs.hanlp.seg.common.Term;
 import com.hankcs.hanlp.tokenizer.IndexTokenizer;
+import com.hankcs.hanlp.tokenizer.NLPTokenizer;
 import com.hankcs.hanlp.tokenizer.SpeedTokenizer;
 
 public class HanLPTest {
 
+	/**
+	 * 标准分词
+	 */
 	@Test
 	public void StandardTokenizerTest() {
 		System.out.println(HanLP.segment("你好，欢迎使用HanLP汉语处理包！"));
 	}
+	/**
+	 * NLP分词
+	 */
+	@Test
+	public void NLPTokenizerTest() {
+		List<Term> termList = NLPTokenizer.segment("中国科学院计算技术研究所的宗成庆教授正在教授自然语言处理课程");
+		System.out.println(termList);
+	}
+	/**
+	 * 索引分词
+	 */
 	@Test
 	public void IndexTokenizerTest() {
 		List<Term> termList = IndexTokenizer.segment("主副食品");
@@ -34,6 +49,9 @@ public class HanLPTest {
 		    System.out.println(term + " [" + term.offset + ":" + (term.offset + term.word.length()) + "]");
 		}
 	}
+	/**
+	 * N-最短路径分词
+	 */
 	@Test
 	public void NShortTest() {
 		Segment nShortSegment = new NShortSegment().enableCustomDictionary(false).enablePlaceRecognize(true).enableOrganizationRecognize(true);
@@ -47,6 +65,9 @@ public class HanLPTest {
 		    System.out.println("N-最短分词：" + nShortSegment.seg(sentence) + "\n最短路分词：" + shortestSegment.seg(sentence));
 		}
 	}
+	/**
+	 * CRF分词
+	 */
 	@Test
 	public void CRFTest() {
 		Segment segment = new CRFSegment();
@@ -61,6 +82,9 @@ public class HanLPTest {
 		    }
 		}
 	}
+	/**
+	 * 极速词典分词
+	 */
 	@Test
 	public void HighSpeedTest() {
 		String text = "江西鄱阳湖干枯，中国最大淡水湖变成大草原";
@@ -74,6 +98,9 @@ public class HanLPTest {
         double costTime = (System.currentTimeMillis() - start) / (double)1000;
         System.out.printf("分词速度：%.2f字每秒", text.length() * pressure / costTime);
 	}
+	/**
+	 * 用户自定义词典
+	 */
 	@Test
 	public void CustomDictionaryTest() {
 		// 动态增加
@@ -162,7 +189,8 @@ public class HanLPTest {
 	 */
 	@Test
 	public void NeuralNetworkDependencyParserTest() {
-		CoNLLSentence sentence = HanLP.parseDependency("徐先生还具体帮助他确定了把画雄鹰、松鼠和麻雀作为主攻目标。");
+		String string = "徐先生还具体帮助他确定了把画雄鹰、松鼠和麻雀作为主攻目标。";
+		CoNLLSentence sentence = HanLP.parseDependency(string);
         System.out.println(sentence);
         // 可以方便地遍历它
         for (CoNLLWord word : sentence)
@@ -183,6 +211,5 @@ public class HanLPTest {
             if (head == CoNLLWord.ROOT) System.out.println(head.LEMMA);
             else System.out.printf("%s --(%s)--> ", head.LEMMA, head.DEPREL);
         }
-
 	}
 }
